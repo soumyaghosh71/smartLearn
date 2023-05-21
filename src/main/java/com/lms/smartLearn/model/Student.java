@@ -1,9 +1,6 @@
 package com.lms.smartLearn.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +18,6 @@ public class Student {
     private String firstName;
     private String lastName;
     private String email;
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.PERSIST)
     private List<Registration> registrationList;
 }
