@@ -1,13 +1,17 @@
 package com.lms.smartLearn.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class RegistrationDto {
+    public RegistrationDto() {
+        date = new Date();
+    }
+
     public RegistrationDto(Date date, Long course, Long student) {
         this.date = date;
         this.course = course;

@@ -1,16 +1,16 @@
 package com.lms.smartLearn.controller;
 
-import com.lms.smartLearn.exception.ResourceNotFoundException;
 import com.lms.smartLearn.model.Course;
 import com.lms.smartLearn.model.Registration;
+import com.lms.smartLearn.model.Student;
 import com.lms.smartLearn.model.dto.RegistrationDto;
 import com.lms.smartLearn.repository.CourseRepository;
 import com.lms.smartLearn.repository.RegistrationRepository;
 import com.lms.smartLearn.repository.StudentRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,18 +25,28 @@ public class RegistrationController {
     private RegistrationRepository registrationRepository;
 
     // Registers a student into a course
-    @PostMapping("/create/{studentId}/{courseId}")
-    public ResponseEntity<HttpStatus> createRegistration(@RequestBody RegistrationDto registration, @PathVariable long studentId, @PathVariable long courseId) {
-
-        return ResponseEntity.ok().build();
+    @PostMapping("/create")
+    public ResponseEntity<Registration> createRegistration(@RequestBody @Valid RegistrationDto registration) {
+        Registration regis = new Registration();
+        Course c = new Course();
+        c.setId(registration.getCourse());
+        regis.setCourse(c);
+        Student s = new Student();
+        s.setId(registration.getStudent());
+        regis.setStudent(s);
+        regis.setDate(registration.getDate());
+        Registration save = registrationRepository.save(regis);
+        return ResponseEntity.ok(save);
     }
 
     // Deregister a course
     @DeleteMapping("/delete/{studentId}/{courseId}")
-    public ResponseEntity<HttpStatus> deleteRegistration(@PathVariable long studentId, @PathVariable long courseId) {
-        var registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId);
-        registration.ifPresent(e -> registrationRepository.delete(e));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Object> deleteRegistration(@PathVariable long studentId, @PathVariable long courseId) {
+        var registration = registrationRepository.searchByStudentIdAndCourseId(studentId, courseId);
+        return registration.map(e -> {
+            registrationRepository.delete(e);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/")
