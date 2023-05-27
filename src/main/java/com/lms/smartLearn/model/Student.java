@@ -1,5 +1,7 @@
 package com.lms.smartLearn.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -22,5 +24,6 @@ public class Student {
     private String lastName;
     private String email;
     @OneToMany(mappedBy = "student")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private List<Registration> registrationList;
 }

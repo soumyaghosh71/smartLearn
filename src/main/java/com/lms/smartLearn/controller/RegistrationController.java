@@ -6,6 +6,7 @@ import com.lms.smartLearn.repository.CourseRepository;
 import com.lms.smartLearn.repository.RegistrationRepository;
 import com.lms.smartLearn.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class RegistrationController {
 
     // Registers a student into a course
     @PostMapping("/create/{studentId}/{courseId}")
-    public ResponseEntity<Registration> createCourse(@RequestBody Registration registration, @PathVariable long studentId, @PathVariable long courseId) {
+    public ResponseEntity<HttpStatus> createRegistration(@RequestBody Registration registration, @PathVariable long studentId, @PathVariable long courseId) {
         var student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found for id" + studentId));
         var course = courseRepository.findById(courseId)
@@ -29,6 +30,14 @@ public class RegistrationController {
         registration.setStudent(student);
         registration.setCourse(course);
         registrationRepository.save(registration);
-        return ResponseEntity.ok(registration);
+        return ResponseEntity.ok().build();
+    }
+
+    // Deregister a course
+    @DeleteMapping("/delete/{studentId}/{courseId}")
+    public ResponseEntity<HttpStatus> deleteRegistration(@PathVariable long studentId, @PathVariable long courseId) {
+        var registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId);
+        registrationRepository.delete(registration);
+        return ResponseEntity.ok().build();
     }
 }
