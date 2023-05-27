@@ -4,6 +4,8 @@ import com.lms.smartLearn.exception.ResourceNotFoundException;
 import com.lms.smartLearn.model.Teacher;
 import com.lms.smartLearn.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +38,11 @@ public class TeacherController {
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher not found for id" + id));
         return ResponseEntity.ok(teacher);
+    }
+
+    @GetMapping("/")
+    public Page<Teacher> getRegistrationPagination(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable p = Pageable.ofSize(pageSize).withPage(page);
+        return teacherRepository.findAll(p);
     }
 }

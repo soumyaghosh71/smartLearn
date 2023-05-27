@@ -1,11 +1,15 @@
 package com.lms.smartLearn.controller;
 
 import com.lms.smartLearn.exception.ResourceNotFoundException;
+import com.lms.smartLearn.model.Course;
 import com.lms.smartLearn.model.Registration;
+import com.lms.smartLearn.model.dto.RegistrationDto;
 import com.lms.smartLearn.repository.CourseRepository;
 import com.lms.smartLearn.repository.RegistrationRepository;
 import com.lms.smartLearn.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +26,8 @@ public class RegistrationController {
 
     // Registers a student into a course
     @PostMapping("/create/{studentId}/{courseId}")
-    public ResponseEntity<HttpStatus> createRegistration(@RequestBody Registration registration, @PathVariable long studentId, @PathVariable long courseId) {
-        var student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found for id" + studentId));
-        var course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found for id" + courseId));
-        registration.setStudent(student);
-        registration.setCourse(course);
-        registrationRepository.save(registration);
+    public ResponseEntity<HttpStatus> createRegistration(@RequestBody RegistrationDto registration, @PathVariable long studentId, @PathVariable long courseId) {
+
         return ResponseEntity.ok().build();
     }
 
@@ -37,7 +35,13 @@ public class RegistrationController {
     @DeleteMapping("/delete/{studentId}/{courseId}")
     public ResponseEntity<HttpStatus> deleteRegistration(@PathVariable long studentId, @PathVariable long courseId) {
         var registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId);
-        registrationRepository.delete(registration);
+        registration.ifPresent(e -> registrationRepository.delete(e));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/")
+    public Page<Registration> getRegistrationPagination(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable p = Pageable.ofSize(pageSize).withPage(page);
+        return registrationRepository.findAll(p);
     }
 }
