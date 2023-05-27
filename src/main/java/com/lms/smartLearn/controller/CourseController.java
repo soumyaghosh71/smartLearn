@@ -34,4 +34,13 @@ public class CourseController {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found for id" + id));
         return ResponseEntity.ok(course);
     }
+
+    // Deletes a course
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable long id) {
+        var course = courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found for id" + id));
+        courseRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 }
