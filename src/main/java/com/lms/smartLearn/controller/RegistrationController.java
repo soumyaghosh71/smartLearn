@@ -7,6 +7,9 @@ import com.lms.smartLearn.model.dto.RegistrationDto;
 import com.lms.smartLearn.repository.CourseRepository;
 import com.lms.smartLearn.repository.RegistrationRepository;
 import com.lms.smartLearn.repository.StudentRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.info.Info;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/registration")
+@Tag(name = "Registration", description = "")
 public class RegistrationController {
     @Autowired
     private StudentRepository studentRepository;

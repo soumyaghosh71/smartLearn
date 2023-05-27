@@ -4,6 +4,8 @@ import com.lms.smartLearn.model.Course;
 import com.lms.smartLearn.model.Teacher;
 import com.lms.smartLearn.repository.CourseRepository;
 import com.lms.smartLearn.repository.TeacherRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Objects;
 
 @SpringBootApplication
+@OpenAPIDefinition(info=@Info(title="Soumya's LMS project for UDEMY"))
 public class SmartLearnApplication implements CommandLineRunner {
     @Autowired
     private CourseRepository courseRepository;
